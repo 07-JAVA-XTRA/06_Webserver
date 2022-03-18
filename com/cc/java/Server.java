@@ -4,6 +4,7 @@ package com.cc.java;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -20,8 +21,10 @@ class Server {
     // keeps the server alive!
 
         try(Socket client = serverSocket.accept()){
-          output("msg: " + client.toString());
           
+          /** INPUT - Stream (vom Browser) | REQUEST*/
+
+          output("msg: " + client.toString());
           // request als Byte-Steam
           InputStreamReader inputStream = new InputStreamReader(client.getInputStream());
           // Bytes --> Characters
@@ -39,9 +42,15 @@ class Server {
           output("--> REQUEST: ");
           output("--> " + request);
 
-
-
-
+          /** Output - Stream (zum Browser) | RESPONSE*/
+  
+          OutputStream clientOutput = client.getOutputStream();
+          clientOutput.write(("HTTP/1.1 200 OK \r\n").getBytes()); // Bytes
+          clientOutput.write(("\r\n").getBytes());
+          clientOutput.write(("Hello World").getBytes());
+          
+          clientOutput.flush();
+          clientOutput.close();
 
         }
     }
